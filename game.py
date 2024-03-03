@@ -9,10 +9,10 @@ class GameController:
         pygame.display.set_caption("Chess")
         self.screen = pygame.display.set_mode(SCREENSIZE)
         self.clock = pygame.time.Clock()
-        self.chessGame = Chess()
+        # self.chessGame = Chess()
 
     def startGame(self):
-        pass
+        self.chessGame = Chess()
 
     def update(self):
 

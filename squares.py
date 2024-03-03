@@ -1,21 +1,42 @@
 import pygame
 from constants import *
 
+class Square:
+    def __init__(self, number):
+        self.number = number
+        self.rectangle = None
+        self.setRectangle()
+        self.color = None
+        self.setColor()
+
+    def getScreenPosition(self):
+        line = (self.number - 1) // NCOLS
+        col = (self.number - 1) % NROWS
+        return (col * TILEWIDTH, line * TILEHEIGHT)
+    def setRectangle(self):
+        line = (self.number - 1) // NCOLS
+        col = (self.number - 1) % NROWS
+        self.rectangle = pygame.Rect(col * TILEWIDTH, line * TILEHEIGHT, (col+1) * TILEWIDTH, (line+1) * TILEHEIGHT)
+
+    def setColor(self):
+        if ( self.number + (self.number - 1) // NCOLS ) % 2 == 0:
+            self.color = BROWN
+        else:
+            self.color = CREAM
+
+    def render(self, surf):
+        pygame.draw.rect(surf,self.color,self.rectangle)
+
 class Squares:
     def __init__(self):
-        self.squareList = {} # { 1 : (Sq1, Cl1) , 2: (Sq2, Cl2) ... }
+        self.squareList = []
         self.numberOfSquares = NCOLS * NROWS
         self.createSquares()
 
     def createSquares(self):
-        for i in range(NROWS):
-            for j in range(NCOLS):
-                squareNumber = i * NCOLS + j + 1
-                if ( squareNumber + i ) % 2 == 0:
-                    color = BROWN
-                else:
-                    color = CREAM
+        for i in range(1,self.numberOfSquares + 1):
+            self.squareList.append(Square(i))
 
-                squareRect = pygame.Rect(TILEWIDTH * j, TILEHEIGHT * i, TILEWIDTH * (j+1), TILEHEIGHT * (i+1))
-                self.squareList[squareNumber] = squareRect, color
-                # pygame.draw(squareRect)
+    def renderSquares(self, surf):
+        for square in self.squareList:
+            square.render(surf)

@@ -8,6 +8,7 @@ class Square:
         self.setRectangle()
         self.color = None
         self.setColor()
+        self.piece = None
 
     def getScreenPosition(self):
         line = (self.number - 1) // NCOLS

@@ -17,13 +17,18 @@ class GameController:
     def update(self):
 
         self.clock.tick(60) # 60 FPS , doesn't really matter right now
-        self.checkEvents()
+        self.checkGameEvents()
         self.render()
 
-    def checkEvents(self):
+    def checkGameEvents(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    mouse_pos = event.pos
+                    self.chessGame.handleClick(mouse_pos)
+
 
     def render(self):
         self.chessGame.render(self.screen)

@@ -7,7 +7,7 @@ class Square:
         self.rectangle = None
         self.setRectangle()
         self.color = None
-        self.setColor()
+        self.setCorrectColor()
         self.piece = None
 
     def getScreenPosition(self):
@@ -19,7 +19,9 @@ class Square:
         col = (self.number - 1) % NROWS
         self.rectangle = pygame.Rect(col * TILEWIDTH, line * TILEHEIGHT, (col+1) * TILEWIDTH, (line+1) * TILEHEIGHT)
 
-    def setColor(self):
+    def changeColor(self, color):
+        self.color = color
+    def setCorrectColor(self):
         if ( self.number + (self.number - 1) // NCOLS ) % 2 == 0:
             self.color = BROWN
         else:

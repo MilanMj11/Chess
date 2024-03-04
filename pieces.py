@@ -11,9 +11,10 @@ class Piece:
         self.points = None
         self.setPoints()
         self.onTable = True
-        self.occupySquare(square)
-    def occupySquare(self, square):
+        self.moveToSquare(square)
+    def moveToSquare(self, square):
         if square != None:
+            self.square.piece = None
             self.square = square
             square.piece = self
     def setPoints(self):

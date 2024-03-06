@@ -56,6 +56,12 @@ class Chess:
         self.selectedSquare = None
         self.selectedPiece = None
 
+    def showPseudoLegalMoves(self):
+        if self.selectedPiece != None:
+            if (self.selectedPiece.color == WHITE and self.turn == WHITE_TURN) or (
+                    self.selectedPiece.color == BLACK and self.turn == BLACK_TURN):
+                for legalSquare in self.selectedPiece.legalMovesSquares():
+                    legalSquare.changeRedColor();
     def handleClick(self, mouse_pos):
         # click can do 2 diff things : One when we have a selected piece already , and the other is just selecting.
 
@@ -64,37 +70,87 @@ class Chess:
         clickedSquare = self.squares.squareList[((mouse_pos[1] // TILEHEIGHT) * NCOLS + (mouse_pos[0] // TILEWIDTH))]
 
         if self.selectedSquare == None:
+
+            # If there was no selected square before this:
+
+            # select the clicked square
             self.selectSquare(clickedSquare)
+
+            # if it has a piece, show the PseudoLegalMoves
             if clickedSquare.piece != None:
-                for legalSquare in clickedSquare.piece.legalMovesSquares():
-                    # legalSquare.changeColor(RED)
-                    legalSquare.changeRedColor();
-        else:
-            if clickedSquare == self.selectedSquare:
+                self.showPseudoLegalMoves()
+
+            return
+
+        if self.selectedSquare != None:
+
+            if self.selectedSquare == clickedSquare:
                 self.unselectSquare()
                 self.squares.resetBoardColor()
-            else:
-                if self.selectedPiece != None:
-                    self.selectedPiece.moveToSquare(clickedSquare)
+                return
+
+            # If there was a selected square before, I have more situations:
+
+            # If the selected square has a piece :
+            if self.selectedPiece != None:
+
+                # If the previously selected piece was not the good color, act like it was just a square
+                if not ((self.selectedPiece.color == WHITE and self.turn == WHITE_TURN) or (self.selectedPiece.color == BLACK and self.turn == BLACK_TURN)):
                     self.unselectSquare()
                     self.squares.resetBoardColor()
-                else:
+                    # if the newly selected square has a piece that CAN move , I want to show the pseudo legal moves
+                    self.selectSquare(clickedSquare)
+                    self.showPseudoLegalMoves()
+                    return
+                # If the clicked square is a pseudoleagal position for the selected piece
+                if clickedSquare in self.selectedPiece.legalMovesSquares():
+                    # move to square ( capture square )
+                    self.selectedPiece.moveToSquare(clickedSquare)
+                    # change turns because a move was done
+                    if self.turn == WHITE_TURN:
+                        self.turn = BLACK_TURN
+                    else:
+                        self.turn = WHITE_TURN
+                    # unselect the previous square and reset all the colors
                     self.unselectSquare()
+                    self.squares.resetBoardColor()
+                # If the clicked square is not a pseudolegal position for the selected piece
+                else:
+                    # If the newly selected square is also a piece that we can move then select that instead
+                    if clickedSquare.piece != None:
+                        if (clickedSquare.piece.color == WHITE and self.turn == WHITE_TURN) or (
+                                clickedSquare.piece.color == BLACK and self.turn == BLACK_TURN):
+                            self.unselectSquare()
+                            self.squares.resetBoardColor()
+                            self.selectSquare(clickedSquare)
+                            self.showPseudoLegalMoves()
+                        else:
+                            self.unselectSquare()
+                            self.squares.resetBoardColor()
+                            self.selectSquare(clickedSquare)
+                    if clickedSquare.piece == None:
+                        self.unselectSquare()
+                        self.squares.resetBoardColor()
+                        self.selectSquare(clickedSquare)
+
+                return
+            # If the selected square does NOT have a piece
+            if self.selectedPiece == None:
+                self.unselectSquare()
+                self.squares.resetBoardColor()
+
+                # If the newly clicked square also does not have a piece:
+                if clickedSquare.piece == None:
                     self.selectSquare(clickedSquare)
 
-        '''
-        self.selectedSquare = clickedSquare
-        self.selectedSquare.changeColor(RED)
-        if clickedSquare.piece != None:
-            self.selectedPiece = clickedSquare.piece
+                # If the newly clicked square HAS a piece:
+                if clickedSquare.piece != None:
+                    self.selectSquare(clickedSquare)
+                    if (clickedSquare.piece.color == WHITE and self.turn == WHITE_TURN) or (
+                            clickedSquare.piece.color == BLACK and self.turn == BLACK_TURN):
+                        self.showPseudoLegalMoves()
 
-        if self.selectedPiece != None:
-            if self.selectedSquare != self.selectedPiece.square:
-                self.selectedPiece.moveToSquare(self.selectedSquare)
-                self.selectedSquare.setCorrectColor()
-                self.selectedPiece = None
-                self.selectedSquare = None
-        '''
+                return
 
     def update(self):
         pass

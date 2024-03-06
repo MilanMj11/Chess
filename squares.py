@@ -19,6 +19,11 @@ class Square:
         col = (self.number - 1) % NROWS
         self.rectangle = pygame.Rect(col * TILEWIDTH, line * TILEHEIGHT, (col+1) * TILEWIDTH, (line+1) * TILEHEIGHT)
 
+    def changeRedColor(self):
+        if self.color == CREAM:
+            self.color = HARD_RED
+        else:
+            self.color = LIGHT_RED
     def changeColor(self, color):
         self.color = color
     def setCorrectColor(self):
@@ -36,6 +41,9 @@ class Squares:
         self.numberOfSquares = NCOLS * NROWS
         self.createSquares()
 
+    def resetBoardColor(self):
+        for square in self.squareList:
+            square.setCorrectColor()
     def createSquares(self):
         for i in range(1,self.numberOfSquares + 1):
             self.squareList.append(Square(i))

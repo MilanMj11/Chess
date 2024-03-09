@@ -28,11 +28,13 @@ class Piece:
 
     def setCorrectPosition(self):
         self.imagePosition = self.square.getScreenPosition()
+
     def interior(self, position):
         if position[0] >= 0 and position[0] < NCOLS and position[1] >= 0 and position[1] < NROWS:
             return True
         return False
 
+    # Returns a list of the squares that a piece can move to ( Pseudo legal moves )
     def legalMovesSquares(self):
         legalSquareList = []
         self.position = self.getBoardPosition()
@@ -102,6 +104,22 @@ class Piece:
                         if squareAux.piece.color == self.color:
                             continue
                     legalSquareList.append(squareAux)
+            '''
+            ! CASTLE !
+            '''
+            if self.hasMoved == False:
+                for piece in self.chessGame.pieces:
+                    if piece.type == ROOK and piece.color == self.color and piece.hasMoved == False and piece.onTable == True:
+                        print(abs(self.square.number - piece.square.number))
+                        if abs(self.square.number - piece.square.number) == 3:
+                            if self.chessGame.squares.squareList[self.square.number].piece == None and \
+                                    self.chessGame.squares.squareList[self.square.number + 1].piece == None:
+                                legalSquareList.append(self.chessGame.squares.squareList[self.square.number + 1])
+                        if abs(self.square.number - piece.square.number) == 4:
+                            if self.chessGame.squares.squareList[self.square.number - 2].piece == None and \
+                                    self.chessGame.squares.squareList[self.square.number - 3].piece == None and \
+                                        self.chessGame.squares.squareList[self.square.number - 4].piece == None:
+                                legalSquareList.append(self.chessGame.squares.squareList[self.square.number - 3])
 
         if self.type == BISHOP:
             for move in BISHOP_OFFSET:

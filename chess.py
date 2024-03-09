@@ -67,8 +67,7 @@ class Chess:
             if (self.selectedPiece.color == WHITE and self.turn == WHITE_TURN) or (
                     self.selectedPiece.color == BLACK and self.turn == BLACK_TURN):
                 for legalSquare in self.selectedPiece.legalMovesSquares():
-                    legalSquare.changeRedColor();
-
+                    legalSquare.changeRedColor()
 
     def holdingClick(self, mouse_pos, holding):
 
@@ -84,9 +83,10 @@ class Chess:
 
         # If I'm holding click on a piece
         if clickedSquare.piece != None:
-            if (clickedSquare.piece.color == WHITE and self.turn == WHITE_TURN) or (clickedSquare.piece.color == BLACK and self.turn == BLACK_TURN):
-                clickedSquare.piece.imagePosition = ( pygame.mouse.get_pos()[0] - TILEWIDTH / 2 , pygame.mouse.get_pos()[1] - TILEHEIGHT / 2)
-
+            if (clickedSquare.piece.color == WHITE and self.turn == WHITE_TURN) or (
+                    clickedSquare.piece.color == BLACK and self.turn == BLACK_TURN):
+                clickedSquare.piece.imagePosition = (
+                    pygame.mouse.get_pos()[0] - TILEWIDTH / 2, pygame.mouse.get_pos()[1] - TILEHEIGHT / 2)
 
     def handleClick(self, mouse_pos, clickButton):
         # click can do 2 diff things : One when we have a selected piece already , and the other is just selecting.
@@ -94,7 +94,6 @@ class Chess:
         # I want to get the square that I clicked on
 
         clickedSquare = self.squares.squareList[((mouse_pos[1] // TILEHEIGHT) * NCOLS + (mouse_pos[0] // TILEWIDTH))]
-
 
         if clickButton == RIGHT_CLICK:
 
@@ -105,7 +104,6 @@ class Chess:
 
             self.squares.resetBoardColor()
             return
-
 
         if self.selectedPiece != None:
             self.selectedPiece.setCorrectPosition()
@@ -148,6 +146,22 @@ class Chess:
                 # If the clicked square is a pseudoleagal position for the selected piece
                 if clickedSquare in self.selectedPiece.legalMovesSquares():
                     # move to square ( capture square )
+
+                    '''
+                    ! CASTLE SITUATION !
+                    '''
+                    if self.selectedPiece.type == KING:
+                        # print("OK")
+                        if abs(clickedSquare.number - self.selectedPiece.square.number) == 2:
+                            # print("BETTER")
+                            if clickedSquare.number > self.selectedPiece.square.number:
+                                rook = self.squares.squareList[clickedSquare.number].piece
+                                rook.moveToSquare(self.squares.squareList[clickedSquare.number - 2])
+
+                            if clickedSquare.number < self.selectedPiece.square.number:
+                                rook = self.squares.squareList[clickedSquare.number - 3].piece
+                                rook.moveToSquare(self.squares.squareList[clickedSquare.number])
+
                     self.selectedPiece.moveToSquare(clickedSquare)
                     # change turns because a move was done
                     if self.turn == WHITE_TURN:

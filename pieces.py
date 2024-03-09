@@ -20,8 +20,14 @@ class Piece:
         self.moveToSquare(square)
         self.hasMoved = False
         self.position = self.getBoardPosition()
+        self.image = None
+        self.setImage()
+        self.imagePosition = None
+        self.setCorrectPosition()
         # self.Squares = Squares()
 
+    def setCorrectPosition(self):
+        self.imagePosition = self.square.getScreenPosition()
     def interior(self, position):
         if position[0] >= 0 and position[0] < NCOLS and position[1] >= 0 and position[1] < NROWS:
             return True
@@ -151,6 +157,7 @@ class Piece:
             self.square = square
             square.piece = self
             self.position = self.getBoardPosition()
+            self.setCorrectPosition()
 
     def setPoints(self):
         if self.type == PAWN:
@@ -178,48 +185,51 @@ class Piece:
         column = (self.square.number - 1) % NROWS
         return (line, column)
 
-    def render(self, surf):
-        if self.onTable == False:
-            return
-
-        image = pygame.image.load("assets/white_pawn.png").convert()
+    def setImage(self):
+        self.image = pygame.image.load("assets/white_pawn.png").convert()
 
         if self.type == PAWN:
             if self.color == WHITE:
-                image = pygame.image.load("assets/white_pawn.png").convert()
+                self.image = pygame.image.load("assets/white_pawn.png").convert()
             else:
-                image = pygame.image.load("assets/black_pawn.png").convert()
+                self.image = pygame.image.load("assets/black_pawn.png").convert()
 
         if self.type == ROOK:
             if self.color == WHITE:
-                image = pygame.image.load("assets/white_rook.png").convert()
+                self.image = pygame.image.load("assets/white_rook.png").convert()
             else:
-                image = pygame.image.load("assets/black_rook.png").convert()
+                self.image = pygame.image.load("assets/black_rook.png").convert()
 
         if self.type == BISHOP:
             if self.color == WHITE:
-                image = pygame.image.load("assets/white_bishop.png").convert()
+                self.image = pygame.image.load("assets/white_bishop.png").convert()
             else:
-                image = pygame.image.load("assets/black_bishop.png").convert()
+                self.image = pygame.image.load("assets/black_bishop.png").convert()
 
         if self.type == KNIGHT:
             if self.color == WHITE:
-                image = pygame.image.load("assets/white_knight.png").convert()
+                self.image = pygame.image.load("assets/white_knight.png").convert()
             else:
-                image = pygame.image.load("assets/black_knight.png").convert()
+                self.image = pygame.image.load("assets/black_knight.png").convert()
 
         if self.type == QUEEN:
             if self.color == WHITE:
-                image = pygame.image.load("assets/white_queen.png").convert()
+                self.image = pygame.image.load("assets/white_queen.png").convert()
             else:
-                image = pygame.image.load("assets/black_queen.png").convert()
+                self.image = pygame.image.load("assets/black_queen.png").convert()
 
         if self.type == KING:
             if self.color == WHITE:
-                image = pygame.image.load("assets/white_king.png").convert()
+                self.image = pygame.image.load("assets/white_king.png").convert()
             else:
-                image = pygame.image.load("assets/black_king.png").convert()
+                self.image = pygame.image.load("assets/black_king.png").convert()
 
-        image.set_colorkey((100, 100, 100))
-        surf.blit(image, self.square.getScreenPosition())
+        self.image.set_colorkey((100, 100, 100))
+
+    def render(self, surf):
+
+        if self.onTable == False:
+            return
+
+        surf.blit(self.image, self.imagePosition)
         # pygame.draw.circle(surf, self.color, (self.square.getScreenPosition()[0] + TILEWIDTH / 2 , self.square.getScreenPosition()[1] + TILEHEIGHT / 2), TILEHEIGHT / 2)

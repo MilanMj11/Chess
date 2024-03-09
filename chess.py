@@ -42,6 +42,12 @@ class Chess:
         for i in range(8, 16):
             self.pieces.append(Piece(self, PAWN, BLACK, self.squares.squareList[i]))
 
+    def unselectEverything(self):
+        for piece in self.pieces:
+            piece.setCorrectPosition()
+        for square in self.squares.squareList:
+            square.setCorrectColor()
+
     def drawBoard(self, surf):
         self.squares.renderSquares(surf)
 
@@ -62,6 +68,25 @@ class Chess:
                     self.selectedPiece.color == BLACK and self.turn == BLACK_TURN):
                 for legalSquare in self.selectedPiece.legalMovesSquares():
                     legalSquare.changeRedColor();
+
+
+    def holdingClick(self, mouse_pos, holding):
+
+        if mouse_pos == None:
+            return
+
+        clickedSquare = self.squares.squareList[((mouse_pos[1] // TILEHEIGHT) * NCOLS + (mouse_pos[0] // TILEWIDTH))]
+
+        if holding == False:
+            if clickedSquare.piece != None:
+                clickedSquare.piece.setCorrectPosition()
+            return
+
+        # If I'm holding click on a piece
+        if clickedSquare.piece != None:
+            clickedSquare.piece.imagePosition = ( pygame.mouse.get_pos()[0] - TILEWIDTH / 2 , pygame.mouse.get_pos()[1] - TILEHEIGHT / 2)
+
+
     def handleClick(self, mouse_pos):
         # click can do 2 diff things : One when we have a selected piece already , and the other is just selecting.
 
@@ -69,8 +94,10 @@ class Chess:
 
         clickedSquare = self.squares.squareList[((mouse_pos[1] // TILEHEIGHT) * NCOLS + (mouse_pos[0] // TILEWIDTH))]
 
-        if self.selectedSquare == None:
+        if self.selectedPiece != None:
+            self.selectedPiece.setCorrectPosition()
 
+        if self.selectedSquare == None:
             # If there was no selected square before this:
 
             # select the clicked square
@@ -85,8 +112,8 @@ class Chess:
         if self.selectedSquare != None:
 
             if self.selectedSquare == clickedSquare:
-                self.unselectSquare()
-                self.squares.resetBoardColor()
+                # self.unselectSquare()
+                # self.squares.resetBoardColor()
                 return
 
             # If there was a selected square before, I have more situations:
@@ -95,7 +122,8 @@ class Chess:
             if self.selectedPiece != None:
 
                 # If the previously selected piece was not the good color, act like it was just a square
-                if not ((self.selectedPiece.color == WHITE and self.turn == WHITE_TURN) or (self.selectedPiece.color == BLACK and self.turn == BLACK_TURN)):
+                if not ((self.selectedPiece.color == WHITE and self.turn == WHITE_TURN) or (
+                        self.selectedPiece.color == BLACK and self.turn == BLACK_TURN)):
                     self.unselectSquare()
                     self.squares.resetBoardColor()
                     # if the newly selected square has a piece that CAN move , I want to show the pseudo legal moves

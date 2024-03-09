@@ -31,15 +31,17 @@ class GameController:
                 if event.button == 1:
                     self.mouse_pos = event.pos
                     self.holdingClick = True
-                    self.chessGame.handleClick(self.mouse_pos, LEFT_CLICK)
+                    self.chessGame.handleClick(self.mouse_pos, LEFT_CLICK_PRESS)
                 if event.button == 3:
+                    self.mouse_pos = event.pos
                     self.chessGame.unselectEverything()
                     self.holdingClick = False
+                    self.chessGame.handleClick(self.mouse_pos, RIGHT_CLICK)
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     self.mouse_pos = event.pos
                     self.holdingClick = False
-                    self.chessGame.handleClick(self.mouse_pos, RIGHT_CLICK)
+                    self.chessGame.handleClick(self.mouse_pos, LEFT_CLICK_RELEASE)
 
         # print(self.holdingClick)
         self.chessGame.holdingClick(self.mouse_pos, self.holdingClick)

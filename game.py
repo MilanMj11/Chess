@@ -31,7 +31,7 @@ class GameController:
                 if event.button == 1:
                     self.mouse_pos = event.pos
                     self.holdingClick = True
-                    self.chessGame.handleClick(self.mouse_pos)
+                    self.chessGame.handleClick(self.mouse_pos, LEFT_CLICK)
                 if event.button == 3:
                     self.chessGame.unselectEverything()
                     self.holdingClick = False
@@ -39,7 +39,7 @@ class GameController:
                 if event.button == 1:
                     self.mouse_pos = event.pos
                     self.holdingClick = False
-                    self.chessGame.handleClick(self.mouse_pos)
+                    self.chessGame.handleClick(self.mouse_pos, RIGHT_CLICK)
 
         # print(self.holdingClick)
         self.chessGame.holdingClick(self.mouse_pos, self.holdingClick)

@@ -12,7 +12,13 @@ class Chess:
         self.initChessPieces()
         self.selectedPiece = None
         self.selectedSquare = None
+        self.movesHistory = []  # (Piece, Square1, Square2)
 
+    def getSquareByNumber(self, nr):
+        for square in self.squares.squareList:
+            if square.number == nr:
+                return square
+        return None
     def initChessPieces(self):
 
         self.pieces.append(Piece(self, ROOK, BLACK, self.squares.squareList[0]))
@@ -44,9 +50,14 @@ class Chess:
 
     def unselectEverything(self):
         for piece in self.pieces:
-            piece.setCorrectPosition()
+            if piece.onTable:
+                piece.setCorrectPosition()
         for square in self.squares.squareList:
             square.setCorrectColor()
+
+    def printMovesHistory(self):
+        for move in self.movesHistory:
+            print(move)
 
     def drawBoard(self, surf):
         self.squares.renderSquares(surf)
@@ -89,6 +100,8 @@ class Chess:
                     pygame.mouse.get_pos()[0] - TILEWIDTH / 2, pygame.mouse.get_pos()[1] - TILEHEIGHT / 2)
 
     def handleClick(self, mouse_pos, clickButton):
+        # self.printMovesHistory()
+
         # click can do 2 diff things : One when we have a selected piece already , and the other is just selecting.
 
         # I want to get the square that I clicked on
@@ -148,8 +161,26 @@ class Chess:
                     # move to square ( capture square )
 
                     '''
+                    ! EN PASSANT SITUATION !
+                    '''
+
+                    if self.selectedPiece.type == PAWN:
+                        # If I take diagonally , I want to check if I take to a square that is empty
+                        if abs(clickedSquare.number - self.selectedPiece.square.number) == 7 or abs(
+                                clickedSquare.number - self.selectedPiece.square.number) == 9:
+                            if clickedSquare.piece == None:
+                                # means that an en passant was commited:
+                                if self.selectedPiece.color == WHITE:
+                                    enPassantSquare = self.getSquareByNumber(clickedSquare.number + 8)
+                                else:
+                                    enPassantSquare = self.getSquareByNumber(clickedSquare.number - 8)
+                                enPassantSquare.piece.takeFromTable()
+
+                    '''
                     ! CASTLE SITUATION !
                     '''
+                    castled = False
+
                     if self.selectedPiece.type == KING:
                         # print("OK")
                         if abs(clickedSquare.number - self.selectedPiece.square.number) == 2:
@@ -157,12 +188,20 @@ class Chess:
                             if clickedSquare.number > self.selectedPiece.square.number:
                                 rook = self.squares.squareList[clickedSquare.number].piece
                                 rook.moveToSquare(self.squares.squareList[clickedSquare.number - 2])
+                                self.movesHistory.append("Small Castle")
+                                castled = True
 
                             if clickedSquare.number < self.selectedPiece.square.number:
                                 rook = self.squares.squareList[clickedSquare.number - 3].piece
                                 rook.moveToSquare(self.squares.squareList[clickedSquare.number])
+                                self.movesHistory.append("Big Castle")
+                                castled = True
+
+                    if castled == False:
+                        self.movesHistory.append((self.selectedPiece, self.selectedSquare, clickedSquare))
 
                     self.selectedPiece.moveToSquare(clickedSquare)
+
                     # change turns because a move was done
                     if self.turn == WHITE_TURN:
                         self.turn = BLACK_TURN

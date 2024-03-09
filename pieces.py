@@ -81,6 +81,50 @@ class Piece:
                     if diagSquare2.piece.color != self.color:
                         legalSquareList.append(diagSquare2)
 
+            '''
+            En passant
+            '''
+
+            # checking left and right.
+            # if there is a pawn that moved 2 units last move
+            # then I can en passant
+
+            same_line = self.position[0]
+            if self.color == WHITE:
+                new_line = self.position[0] - 1
+            else:
+                new_line = self.position[0] + 1
+            left_col = self.position[1] - 1
+            right_col = self.position[1] + 1
+
+            if self.chessGame.movesHistory:
+                if self.interior((same_line, left_col)) == True:
+
+                    if self.chessGame.squares.squareList[self.getSquareNumber((same_line, left_col)) - 1].piece != None:
+                        left_piece = self.chessGame.squares.squareList[
+                            self.getSquareNumber((same_line, left_col)) - 1].piece
+                        if left_piece.type == PAWN:
+                            last_move = self.chessGame.movesHistory[-1]
+                            if last_move[0] == left_piece and abs(
+                                    last_move[1].number - last_move[2].number) == NROWS * 2:
+                                diagSquare1 = self.chessGame.squares.squareList[
+                                    self.getSquareNumber((new_line, left_col)) - 1]
+                                legalSquareList.append(diagSquare1)
+
+                if self.interior((same_line, right_col)) == True:
+
+                    if self.chessGame.squares.squareList[
+                        self.getSquareNumber((same_line, right_col)) - 1].piece != None:
+                        right_piece = self.chessGame.squares.squareList[
+                            self.getSquareNumber((same_line, right_col)) - 1].piece
+                        if right_piece.type == PAWN:
+                            last_move = self.chessGame.movesHistory[-1]
+                            if last_move[0] == right_piece and abs(
+                                    last_move[1].number - last_move[2].number) == NROWS * 2:
+                                diagSquare2 = self.chessGame.squares.squareList[
+                                    self.getSquareNumber((new_line, right_col)) - 1]
+                                legalSquareList.append(diagSquare2)
+
         if self.type == KNIGHT:
             # print(self.position)
             for move in KNIGHT_OFFSET:
@@ -110,7 +154,7 @@ class Piece:
             if self.hasMoved == False:
                 for piece in self.chessGame.pieces:
                     if piece.type == ROOK and piece.color == self.color and piece.hasMoved == False and piece.onTable == True:
-                        print(abs(self.square.number - piece.square.number))
+                        # print(abs(self.square.number - piece.square.number))
                         if abs(self.square.number - piece.square.number) == 3:
                             if self.chessGame.squares.squareList[self.square.number].piece == None and \
                                     self.chessGame.squares.squareList[self.square.number + 1].piece == None:
@@ -118,7 +162,7 @@ class Piece:
                         if abs(self.square.number - piece.square.number) == 4:
                             if self.chessGame.squares.squareList[self.square.number - 2].piece == None and \
                                     self.chessGame.squares.squareList[self.square.number - 3].piece == None and \
-                                        self.chessGame.squares.squareList[self.square.number - 4].piece == None:
+                                    self.chessGame.squares.squareList[self.square.number - 4].piece == None:
                                 legalSquareList.append(self.chessGame.squares.squareList[self.square.number - 3])
 
         if self.type == BISHOP:

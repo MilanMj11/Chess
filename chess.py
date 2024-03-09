@@ -130,6 +130,7 @@ class Chess:
                     # if the newly selected square has a piece that CAN move , I want to show the pseudo legal moves
                     if clickButton == LEFT_CLICK:
                         self.selectSquare(clickedSquare)
+                        self.showPseudoLegalMoves()
                     # self.showPseudoLegalMoves()
                     return
                 # If the clicked square is a pseudoleagal position for the selected piece

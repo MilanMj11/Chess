@@ -34,8 +34,54 @@ class Piece:
             return True
         return False
 
+    def simulateMove(self, square):
+        if square != None:
+            squarePiece = None
+            if square.piece != None:
+                squarePiece = square.piece
+                squarePiece.onTable = False
+            self.square.piece = None
+            prevSquare = self.square
+            self.square = square
+            square.piece = self
+            return (prevSquare, squarePiece)
+
+    def undoSimulatedMove(self, prevSquare, squarePiece):
+        self.square.piece = None
+        if squarePiece != None:
+            squarePiece.onTable = True
+            self.square.piece = squarePiece
+        prevSquare.piece = self
+        self.square = prevSquare
+
     # Returns a list of the squares that a piece can move to ( Pseudo legal moves )
-    def legalMovesSquares(self):
+    def actualLegalMovesSquares(self):
+        # Take all pseudo legal moves
+        legalSquareList = self.pseudoLegalMovesSquares()
+        squaresToDelete = []
+        # Now eliminate those that produce wrong behaviour
+        for square in legalSquareList:
+            # let's simulate I move the piece to that position and see bad behaviour
+            ''' '''
+            simulateInfo = self.simulateMove(square)
+            KingsChecked = self.chessGame.areKingsChecked()
+            # print(square.number, KingsChecked)
+            if self.color == WHITE and KingsChecked[0] == True:
+                # wrong behaviour , can't move
+                squaresToDelete.append(square)
+            if self.color == BLACK and KingsChecked[1] == True:
+                # wrong behaviour , can't move
+                squaresToDelete.append(square)
+
+            # now I want to move it back:
+            self.undoSimulatedMove(simulateInfo[0], simulateInfo[1])
+
+        for square in squaresToDelete:
+            legalSquareList.remove(square)
+
+        return legalSquareList
+
+    def pseudoLegalMovesSquares(self):
         legalSquareList = []
         self.position = self.getBoardPosition()
         if self.type == PAWN:

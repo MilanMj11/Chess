@@ -19,6 +19,7 @@ class Chess:
             if square.number == nr:
                 return square
         return None
+
     def initChessPieces(self):
 
         self.pieces.append(Piece(self, ROOK, BLACK, self.squares.squareList[0]))
@@ -73,11 +74,46 @@ class Chess:
         self.selectedSquare = None
         self.selectedPiece = None
 
+    def areKingsChecked(self):  # (whiteKingChecked , blackKingChecked)
+        # check if black king is checked
+        for piece in self.pieces:
+            if piece.type == KING and piece.color == BLACK:
+                blackKing = piece
+                break
+        blackKingChecked = False
+        for piece in self.pieces:
+            if piece.onTable == True and piece.color == WHITE:
+                for square in piece.pseudoLegalMovesSquares():
+                    if square == blackKing.square:
+                        blackKingChecked = True
+                        break
+
+        # check if white king is checked
+        for piece in self.pieces:
+            if piece.type == KING and piece.color == WHITE:
+                whiteKing = piece
+                break
+        whiteKingChecked = False
+        for piece in self.pieces:
+            if piece.onTable == True and piece.color == BLACK:
+                for square in piece.pseudoLegalMovesSquares():
+                    if square == whiteKing.square:
+                        whiteKingChecked = True
+                        break
+
+        return (whiteKingChecked, blackKingChecked)
+
+    def showActualLegalMoves(self):
+        if self.selectedPiece != None:
+            if (self.selectedPiece.color == WHITE and self.turn == WHITE_TURN) or (
+                    self.selectedPiece.color == BLACK and self.turn == BLACK_TURN):
+                for legalSquare in self.selectedPiece.actualLegalMovesSquares():
+                    legalSquare.changeRedColor()
     def showPseudoLegalMoves(self):
         if self.selectedPiece != None:
             if (self.selectedPiece.color == WHITE and self.turn == WHITE_TURN) or (
                     self.selectedPiece.color == BLACK and self.turn == BLACK_TURN):
-                for legalSquare in self.selectedPiece.legalMovesSquares():
+                for legalSquare in self.selectedPiece.pseudoLegalMovesSquares():
                     legalSquare.changeRedColor()
 
     def holdingClick(self, mouse_pos, holding):
@@ -129,7 +165,7 @@ class Chess:
 
             # if it has a piece, show the PseudoLegalMoves
             if clickedSquare.piece != None:
-                self.showPseudoLegalMoves()
+                self.showActualLegalMoves()
 
             return
 
@@ -153,11 +189,11 @@ class Chess:
                     # if the newly selected square has a piece that CAN move , I want to show the pseudo legal moves
                     if clickButton == LEFT_CLICK_PRESS:
                         self.selectSquare(clickedSquare)
-                        self.showPseudoLegalMoves()
+                        self.showActualLegalMoves()
                     # self.showPseudoLegalMoves()
                     return
                 # If the clicked square is a pseudoleagal position for the selected piece
-                if clickedSquare in self.selectedPiece.legalMovesSquares():
+                if clickedSquare in self.selectedPiece.actualLegalMovesSquares():
                     # move to square ( capture square )
 
                     '''
@@ -219,7 +255,7 @@ class Chess:
                             self.unselectSquare()
                             self.squares.resetBoardColor()
                             self.selectSquare(clickedSquare)
-                            self.showPseudoLegalMoves()
+                            self.showActualLegalMoves()
                         else:
                             self.unselectSquare()
                             self.squares.resetBoardColor()
@@ -250,7 +286,7 @@ class Chess:
                     self.selectSquare(clickedSquare)
                     if (clickedSquare.piece.color == WHITE and self.turn == WHITE_TURN) or (
                             clickedSquare.piece.color == BLACK and self.turn == BLACK_TURN):
-                        self.showPseudoLegalMoves()
+                        self.showActualLegalMoves()
 
                 return
 

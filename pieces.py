@@ -61,6 +61,7 @@ class Piece:
         squaresToDelete = []
         # Now eliminate those that produce wrong behaviour
         for square in legalSquareList:
+
             # let's simulate I move the piece to that position and see bad behaviour
             ''' '''
             simulateInfo = self.simulateMove(square)
@@ -76,7 +77,36 @@ class Piece:
             # now I want to move it back:
             self.undoSimulatedMove(simulateInfo[0], simulateInfo[1])
 
-        for square in squaresToDelete:
+        ''' castle situation with check '''
+
+        if self.type == KING:
+            for square in legalSquareList:
+                if abs(self.square.number - square.number) == 2:
+                    # we know the square in for is now the position for castle
+                    # we want to get the square between the KING and the castle position
+                    if square.number > self.square.number:
+                        middleSquare = self.chessGame.getSquareByNumber(self.square.number + 1)
+                    else:
+                        middleSquare = self.chessGame.getSquareByNumber(self.square.number - 1)
+
+                    if middleSquare in squaresToDelete:
+                        squaresToDelete.append(square)
+
+                    KingsChecked = self.chessGame.areKingsChecked()
+                    if self.color == WHITE and KingsChecked[0] == True:
+                        # wrong behaviour , can't move
+                        squaresToDelete.append(square)
+                    if self.color == BLACK and KingsChecked[1] == True:
+                        # wrong behaviour , can't move
+                        squaresToDelete.append(square)
+
+                    break
+
+        ''' castle situation with check '''
+
+        squaresToDeleteSet = set(squaresToDelete)
+
+        for square in squaresToDeleteSet:
             legalSquareList.remove(square)
 
         return legalSquareList

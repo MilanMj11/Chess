@@ -131,8 +131,9 @@ class Piece:
                                 self.chessGame.squares.squareList[self.square.number - 2 * NCOLS - 1])
             else:
                 if self.color == BLACK:
-                    if self.chessGame.squares.squareList[self.square.number + NCOLS - 1].piece == None:
-                        legalSquareList.append(self.chessGame.squares.squareList[self.square.number + NCOLS - 1])
+                    if self.square.number + NCOLS - 1 <= 63:
+                        if self.chessGame.squares.squareList[self.square.number + NCOLS - 1].piece == None:
+                            legalSquareList.append(self.chessGame.squares.squareList[self.square.number + NCOLS - 1])
                 else:
                     if self.chessGame.squares.squareList[self.square.number - NCOLS - 1].piece == None:
                         legalSquareList.append(self.chessGame.squares.squareList[self.square.number - NCOLS - 1])
@@ -296,6 +297,16 @@ class Piece:
             square.piece = self
             self.position = self.getBoardPosition()
             self.setCorrectPosition()
+            if self.type == PAWN and self.color == WHITE:
+                if 1 <= square.number and square.number <= 8:
+                    self.type = QUEEN
+                    self.setImage()
+                    self.setPoints()
+            if self.type == PAWN and self.color == BLACK:
+                if 57 <= square.number and square.number <= 64:
+                    self.type = QUEEN
+                    self.setImage()
+                    self.setPoints()
 
     def setPoints(self):
         if self.type == PAWN:

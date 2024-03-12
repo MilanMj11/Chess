@@ -8,11 +8,11 @@ class GameController:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Chess")
-        self.screen = pygame.display.set_mode(SCREENSIZE)
+        self.chessScreen = pygame.display.set_mode(SCREENSIZE)
+        # self.gameScreen = pygame.display.set_mode(GAMESCREENSIZE)
         self.clock = pygame.time.Clock()
         self.holdingClick = False
         self.mouse_pos = None
-        # self.chessGame = Chess()
 
     def startGame(self):
         self.chessGame = Chess()
@@ -45,6 +45,10 @@ class GameController:
 
         # print(self.holdingClick)
         self.chessGame.holdingClick(self.mouse_pos, self.holdingClick)
+
     def render(self):
-        self.chessGame.render(self.screen)
+        self.chessGame.render(self.chessScreen)
+        # self.gameScreen.fill((0, 0, 0))
+        # chess_rect = self.chessScreen.get_rect(center=self.gameScreen.get_rect().center)
+        # self.gameScreen.blit(self.chessScreen, self.chess_rect)
         pygame.display.update()

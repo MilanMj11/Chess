@@ -308,6 +308,7 @@ class Piece:
                     self.setImage()
                     self.setPoints()
 
+
     def setPoints(self):
         if self.type == PAWN:
             self.points = 1

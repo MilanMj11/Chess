@@ -13,6 +13,25 @@ class Chess:
         self.selectedPiece = None
         self.selectedSquare = None
         self.movesHistory = []  # (Piece, Square1, Square2)
+        self.gameOver = None
+
+    def checkIfGameOver(self):
+        available_moves = 0
+        if self.turn == WHITE_TURN:
+            for piece in self.pieces:
+                if piece.onTable == True and piece.color == WHITE:
+                    available_moves += len(piece.actualLegalMovesSquares())
+        if self.turn == BLACK_TURN:
+            for piece in self.pieces:
+                if piece.onTable == True and piece.color == BLACK:
+                    available_moves += len(piece.actualLegalMovesSquares())
+        if available_moves == 0:
+            if self.turn == WHITE_TURN:
+                self.gameOver = BLACK
+            else:
+                self.gameOver = WHITE
+        print(available_moves)
+
 
     def getSquareByNumber(self, nr):
         for square in self.squares.squareList:
@@ -76,10 +95,13 @@ class Chess:
 
     def areKingsChecked(self):  # (whiteKingChecked , blackKingChecked)
         # check if black king is checked
+        blackKing = None
         for piece in self.pieces:
             if piece.type == KING and piece.color == BLACK:
                 blackKing = piece
                 break
+        if blackKing == None:
+            return (-1, -1)
         blackKingChecked = False
         for piece in self.pieces:
             if piece.onTable == True and piece.color == WHITE:
@@ -89,10 +111,13 @@ class Chess:
                         break
 
         # check if white king is checked
+        whiteKing = None
         for piece in self.pieces:
             if piece.type == KING and piece.color == WHITE:
                 whiteKing = piece
                 break
+        if whiteKing == None:
+            return (-1, -1)
         whiteKingChecked = False
         for piece in self.pieces:
             if piece.onTable == True and piece.color == BLACK:
@@ -109,6 +134,7 @@ class Chess:
                     self.selectedPiece.color == BLACK and self.turn == BLACK_TURN):
                 for legalSquare in self.selectedPiece.actualLegalMovesSquares():
                     legalSquare.changeRedColor()
+
     def showPseudoLegalMoves(self):
         if self.selectedPiece != None:
             if (self.selectedPiece.color == WHITE and self.turn == WHITE_TURN) or (
@@ -243,6 +269,8 @@ class Chess:
                         self.turn = BLACK_TURN
                     else:
                         self.turn = WHITE_TURN
+
+                    self.checkIfGameOver()
                     # unselect the previous square and reset all the colors
                     self.unselectSquare()
                     self.squares.resetBoardColor()

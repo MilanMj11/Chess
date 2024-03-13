@@ -3,6 +3,8 @@ from constants import *
 from squares import Squares
 from chess import Chess
 from menu import GameMenu
+from gamefinal import GameFinal
+
 
 class GameController:
     def __init__(self):
@@ -10,7 +12,8 @@ class GameController:
         pygame.display.set_caption("Chess")
         self.display = pygame.display.set_mode(SCREENSIZE)
         self.chessScreen = pygame.Surface(SCREENSIZE)
-        self.menuScreen = pygame.Surface(SCREENSIZE)
+        self.menuScreen = GameMenu()
+        self.finalScreen = GameFinal()
         # self.gameScreen = pygame.display.set_mode(GAMESCREENSIZE)
         self.clock = pygame.time.Clock()
         self.holdingClick = False
@@ -18,11 +21,11 @@ class GameController:
         self.gameState = MENU
 
     def startGame(self):
-        self.chessGame = Chess()
+        self.casualChessGame = Chess()
 
     def update(self):
 
-        self.clock.tick(60)  # 60 FPS , doesn't really matter right now
+        self.clock.tick(90)  # 60 FPS , doesn't really matter right now
         self.checkGameEvents()
         self.render()
 
@@ -32,38 +35,54 @@ class GameController:
                 exit()
 
             if self.gameState == PLAYING_CASUAL:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.gameState = MENU
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         self.mouse_pos = event.pos
                         self.holdingClick = True
-                        self.chessGame.handleClick(self.mouse_pos, LEFT_CLICK_PRESS)
+                        self.casualChessGame.handleClick(self.mouse_pos, LEFT_CLICK_PRESS)
                     if event.button == 3:
                         self.mouse_pos = event.pos
-                        self.chessGame.unselectEverything()
+                        self.casualChessGame.unselectEverything()
                         self.holdingClick = False
-                        self.chessGame.handleClick(self.mouse_pos, RIGHT_CLICK)
+                        self.casualChessGame.handleClick(self.mouse_pos, RIGHT_CLICK)
                 if event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         self.mouse_pos = event.pos
                         self.holdingClick = False
-                        self.chessGame.handleClick(self.mouse_pos, LEFT_CLICK_RELEASE)
+                        self.casualChessGame.handleClick(self.mouse_pos, LEFT_CLICK_RELEASE)
 
             if self.gameState == MENU:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.gameState = PLAYING_CASUAL
+                self.gameState = self.menuScreen.handleEvents(event)
+                if self.gameState == PLAYING_CASUAL:
+                    self.casualChessGame = Chess()
+
+            if self.gameState == FINAL_STATEMENT:
+                self.gameState = self.finalScreen.handleEvents(event)
 
         # print(self.holdingClick)
         if self.gameState == PLAYING_CASUAL:
-            self.chessGame.holdingClick(self.mouse_pos, self.holdingClick)
+            self.casualChessGame.holdingClick(self.mouse_pos, self.holdingClick)
 
     def render(self):
 
         if self.gameState == PLAYING_CASUAL:
-            self.chessGame.render(self.chessScreen)
-            self.display.blit(self.chessScreen, (0,0))
+            self.casualChessGame.render(self.chessScreen)
+            self.display.blit(self.chessScreen, (0, 0))
+            gameWinner = self.casualChessGame.gameOver
+            if gameWinner != None:
+                self.gameState = FINAL_STATEMENT
+                self.finalScreen.setWinner(gameWinner)
 
         if self.gameState == MENU:
-            self.menuScreen.fill((50, 50, 50))
-            self.display.blit(self.menuScreen, (0,0))
+            self.menuScreen.render()
+            self.display.blit(self.menuScreen.surf, (0, 0))
+
+        if self.gameState == FINAL_STATEMENT:
+            self.finalScreen.render()
+            self.display.blit(self.finalScreen.surf, (0, 0))
 
         pygame.display.update()

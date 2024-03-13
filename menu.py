@@ -22,7 +22,7 @@ class GameMenu:
                 mouse_pos = event.pos
                 if self.casualRectangle.collidepoint(mouse_pos):
                     return PLAYING_CASUAL
-                if self.casualRectangle.collidepoint(mouse_pos):
+                if self.botRectangle.collidepoint(mouse_pos):
                     return PLAYING_BOT
         return MENU
 

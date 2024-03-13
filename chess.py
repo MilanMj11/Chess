@@ -15,6 +15,39 @@ class Chess:
         self.movesHistory = []  # (Piece, Square1, Square2)
         self.gameOver = None
 
+    def positionEvaluation(self):
+        # here I want to analyse the position for each color and give some results:
+
+        # Material evaluation
+        whiteValue = 0
+        blackValue = 0
+
+        # Piece development
+        whiteDevelopment = 0
+        blackDevelopment = 0
+
+        for piece in self.pieces:
+            if piece.onTable == True:
+                if piece.color == WHITE:
+                    whiteValue += piece.points * 10
+                    whiteDevelopment += piece.hasMoved * piece.points
+                if piece.color == BLACK:
+                    blackValue += piece.points * 10
+                    blackDevelopment += piece.hasMoved * piece.points
+
+        materialEvaluation = (whiteValue, blackValue)
+        pieceDevelopment = (whiteDevelopment, blackDevelopment)
+
+        return [materialEvaluation, pieceDevelopment]
+
+    def interpretEvaluation(self, list):
+        score = 0
+        for criteria in list:
+            whiteScore = criteria[0]
+            blackScore = criteria[1]
+            score += (whiteScore - blackScore)
+        return score
+
     def checkIfGameOver(self):
         available_moves = 0
         if self.turn == WHITE_TURN:

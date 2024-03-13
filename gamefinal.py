@@ -14,6 +14,9 @@ class GameFinal:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 return MENU
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                return MENU
         return FINAL_STATEMENT
 
     def updateWinnerMessage(self, winner):

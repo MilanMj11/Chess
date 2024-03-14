@@ -34,6 +34,20 @@ class Piece:
             return True
         return False
 
+    def distanceFromSquare(self, squareNumber):
+        linediff = abs((squareNumber - 1) // NCOLS - (self.square.number - 1) // NCOLS)
+        coldiff = abs((squareNumber - 1) % NROWS - (self.square.number - 1) % NROWS)
+        return linediff + coldiff
+
+    def centralizationPoints(self):
+        # I want to see how far from the center the square of the piece is
+        # the center is : 28,29,36,37
+        dist1 = self.distanceFromSquare(28)
+        dist2 = self.distanceFromSquare(29)
+        dist3 = self.distanceFromSquare(36)
+        dist4 = self.distanceFromSquare(37)
+        return -1 * ( dist1 + dist2 + dist3 + dist4 ) * (10 - self.points)
+
     def simulateMove(self, square):
         if square != None:
             squarePiece = None
@@ -44,15 +58,40 @@ class Piece:
             prevSquare = self.square
             self.square = square
             square.piece = self
-            return (prevSquare, squarePiece)
+            if self.hasMoved == False:
+                wasmoved = False
+            else:
+                wasmoved = True
+            self.hasMoved = True
+            changedType = False
+            if self.type == PAWN and self.color == WHITE:
+                if 1 <= square.number and square.number <= 8:
+                    self.type = QUEEN
+                    changedType = True
 
-    def undoSimulatedMove(self, prevSquare, squarePiece):
+            if self.type == PAWN and self.color == BLACK:
+                if 57 <= square.number and square.number <= 64:
+                    self.type = QUEEN
+                    changedType = True
+
+            # self.chessGame.checkIfGameOver()
+
+            return (prevSquare, squarePiece, wasmoved, changedType)
+
+    def undoSimulatedMove(self, prevSquare, squarePiece, wasmoved, changedType):
         self.square.piece = None
         if squarePiece != None:
             squarePiece.onTable = True
             self.square.piece = squarePiece
         prevSquare.piece = self
         self.square = prevSquare
+        if wasmoved == False:
+            self.hasMoved = False
+        if changedType == True:
+            self.type = PAWN
+
+        # if self.chessGame.gameOver == True:
+           #  self.chessGame.gameOver = False
 
     # Returns a list of the squares that a piece can move to ( Pseudo legal moves )
     def actualLegalMovesSquares(self):
@@ -75,7 +114,7 @@ class Piece:
                 squaresToDelete.append(square)
 
             # now I want to move it back:
-            self.undoSimulatedMove(simulateInfo[0], simulateInfo[1])
+            self.undoSimulatedMove(simulateInfo[0], simulateInfo[1], simulateInfo[2], simulateInfo[3])
 
         ''' castle situation with check '''
 
@@ -308,7 +347,6 @@ class Piece:
                     self.setImage()
                     self.setPoints()
 
-
     def setPoints(self):
         if self.type == PAWN:
             self.points = 1
@@ -319,7 +357,7 @@ class Piece:
         if self.type == QUEEN:
             self.points = 9
         if self.type == KING:
-            self.points = 100
+            self.points = 11
             # -> I don't think he has any evaluation of points
 
     def takeFromTable(self):

@@ -18,6 +18,13 @@ class Chess:
     def positionEvaluation(self):
         # here I want to analyse the position for each color and give some results:
 
+        # self.checkIfGameOver()
+        if self.gameOver == True:
+            if self.turn == WHITE_TURN:
+                return [(10000, 0)]
+            else:
+                return [(0,10000)]
+
         # Material evaluation
         whiteValue = 0
         blackValue = 0
@@ -26,19 +33,27 @@ class Chess:
         whiteDevelopment = 0
         blackDevelopment = 0
 
+        # Centralization of pieces
+        whiteCentralization = 0
+        blackCentralization = 0
+
         for piece in self.pieces:
             if piece.onTable == True:
                 if piece.color == WHITE:
-                    whiteValue += piece.points * 10
-                    whiteDevelopment += piece.hasMoved * piece.points
+                    whiteValue += piece.points * 100
+                    whiteDevelopment += piece.hasMoved
+                    whiteCentralization += piece.centralizationPoints()
                 if piece.color == BLACK:
-                    blackValue += piece.points * 10
-                    blackDevelopment += piece.hasMoved * piece.points
+                    blackValue += piece.points * 100
+                    blackDevelopment += piece.hasMoved
+                    blackCentralization += piece.centralizationPoints()
 
         materialEvaluation = (whiteValue, blackValue)
         pieceDevelopment = (whiteDevelopment, blackDevelopment)
+        pieceCentralization = (whiteCentralization, blackCentralization)
 
-        return [materialEvaluation, pieceDevelopment]
+        #pieceDevelopment
+        return [materialEvaluation, pieceCentralization, pieceDevelopment]
 
     def interpretEvaluation(self, list):
         score = 0
@@ -60,11 +75,20 @@ class Chess:
                     available_moves += len(piece.actualLegalMovesSquares())
         if available_moves == 0:
             if self.turn == WHITE_TURN:
+                # print("NOT OK")
+                if self.areKingsChecked()[0] == False:
+                    # print("NOT AMAZING")
+                    self.gameOver = DRAW
+                    return
                 self.gameOver = BLACK
             else:
+                # print("OK")
+                if self.areKingsChecked()[1] == False:
+                    # print("PERFECT")
+                    self.gameOver = DRAW
+                    return
                 self.gameOver = WHITE
-        print(available_moves)
-
+        # print(available_moves)
 
     def getSquareByNumber(self, nr):
         for square in self.squares.squareList:

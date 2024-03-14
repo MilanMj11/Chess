@@ -24,6 +24,8 @@ class GameFinal:
             self.winnerMessage = self.font.render("Winner is WHITE", True, WHITE)
         if winner == BLACK:
             self.winnerMessage = self.font.render("Winner is BLACK", True, WHITE)
+        if winner == DRAW:
+            self.winnerMessage = self.font.render("      DRAW     ", True, WHITE)
 
     def setWinner(self, winner):
         self.winner = winner

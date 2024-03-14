@@ -28,7 +28,8 @@ class GameController:
     def update(self):
 
         if self.gameState == PLAYING_BOT and self.botChessGame != None:
-            self.AI.makeMove(self.AI.findBestMove())
+            if self.botChessGame.turn == BLACK_TURN:
+                self.AI.makeMove(self.AI.findBestMove(2))
 
         self.clock.tick(90)  # 60 FPS , doesn't really matter right now
         self.checkGameEvents()

@@ -46,7 +46,7 @@ class Piece:
         dist2 = self.distanceFromSquare(29)
         dist3 = self.distanceFromSquare(36)
         dist4 = self.distanceFromSquare(37)
-        return -1 * ( dist1 + dist2 + dist3 + dist4 ) * (10 - self.points)
+        return -1 * ( (dist1 + dist2 + dist3 + dist4) / 4 ) * (10 - self.points)
 
     def simulateMove(self, square):
         if square != None:

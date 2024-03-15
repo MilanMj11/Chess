@@ -48,13 +48,14 @@ class Piece:
         dist4 = self.distanceFromSquare(37)
 
         # preferred for pawns to travel to the end ()
+        if self.type != KING:
+            if self.color == WHITE:
+                dist1 = 0
+                dist2 = 0
+            else:
+                dist3 = 0
+                dist4 = 0
 
-        if self.color == WHITE:
-            dist1 = 0
-            dist2 = 0
-        else:
-            dist3 = 0
-            dist4 = 0
 
         if self.type == PAWN:
             if self.color == WHITE:
@@ -67,6 +68,21 @@ class Piece:
         if self.type == PAWN:
             if (self.square.number - 1) % NCOLS == 0 or (self.square.number - 1) % NCOLS == 7:
                 return -1 * ((dist1 + dist2 + dist3 + dist4) // 3 ) * (12 - 8)
+            if (self.square.number-1) % NCOLS == 1 or (self.square.number-1) % NCOLS == 6:
+                return -1 * ( (dist1 + dist2 + dist3 + dist4) // 3 ) * (12 - 4)
+            if (self.square.number-1) % NCOLS == 2 or (self.square.number-1) % NCOLS == 5:
+                return -1 * ( (dist1 + dist2 + dist3 + dist4) // 3 ) * (12 + 2)
+            if (self.square.number - 1) % NCOLS == 3 or (self.square.number - 1) % NCOLS == 4:
+                return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 + 20)
+
+        if self.type == KNIGHT:
+            return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 + 3)
+
+        if self.type == BISHOP:
+            return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 + 3)
+
+        if self.type == KING:
+            return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 - 500)
 
         if self.type == ROOK:
             return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 - 10)

@@ -40,11 +40,11 @@ class Chess:
         for piece in self.pieces:
             if piece.onTable == True:
                 if piece.color == WHITE:
-                    whiteValue += piece.points * 100
+                    whiteValue += piece.points * 1000
                     whiteDevelopment += piece.hasMoved
                     whiteCentralization += piece.centralizationPoints()
                 if piece.color == BLACK:
-                    blackValue += piece.points * 100
+                    blackValue += piece.points * 1000
                     blackDevelopment += piece.hasMoved
                     blackCentralization += piece.centralizationPoints()
 

@@ -19,8 +19,8 @@ class Chess:
         # here I want to analyse the position for each color and give some results:
 
         # self.checkIfGameOver()
-        if self.gameOver == True:
-            if self.turn == WHITE_TURN:
+        if self.gameOver != None:
+            if self.turn == BLACK_TURN:
                 return [(10000, 0)]
             else:
                 return [(0,10000)]

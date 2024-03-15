@@ -47,7 +47,7 @@ class AI:
 
     def minimax(self, depth, alpha, beta, maximizingPlayer):
         # self.chessGame.checkIfGameOver()
-        if depth == 0 or self.chessGame.gameOver == True:
+        if depth == 0 or self.chessGame.gameOver != None:
             return self.chessGame.interpretEvaluation(self.chessGame.positionEvaluation())
 
         if maximizingPlayer:
@@ -123,8 +123,9 @@ class AI:
 
 
         piece.moveToSquare(square)
-        self.chessGame.checkIfGameOver()
         if self.color == BLACK:
             self.chessGame.turn = WHITE_TURN
         else:
             self.chessGame.turn = BLACK_TURN
+
+        self.chessGame.checkIfGameOver()

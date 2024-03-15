@@ -56,22 +56,21 @@ class Piece:
                 dist3 = 0
                 dist4 = 0
 
-
         if self.type == PAWN:
             if self.color == WHITE:
                 if self.square.number <= 32:
-                    return -1 * ( (dist1 + dist2 + dist3 + dist4) // 3 ) * (12 + 5)
+                    return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 + 5)
             if self.color == BLACK:
                 if self.square.number >= 33:
-                    return -1 * ((dist1 + dist2 + dist3 + dist4) // 3 ) * (12 + 5)
+                    return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 + 5)
 
         if self.type == PAWN:
             if (self.square.number - 1) % NCOLS == 0 or (self.square.number - 1) % NCOLS == 7:
-                return -1 * ((dist1 + dist2 + dist3 + dist4) // 3 ) * (12 - 8)
-            if (self.square.number-1) % NCOLS == 1 or (self.square.number-1) % NCOLS == 6:
-                return -1 * ( (dist1 + dist2 + dist3 + dist4) // 3 ) * (12 - 4)
-            if (self.square.number-1) % NCOLS == 2 or (self.square.number-1) % NCOLS == 5:
-                return -1 * ( (dist1 + dist2 + dist3 + dist4) // 3 ) * (12 + 2)
+                return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 - 8)
+            if (self.square.number - 1) % NCOLS == 1 or (self.square.number - 1) % NCOLS == 6:
+                return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 - 4)
+            if (self.square.number - 1) % NCOLS == 2 or (self.square.number - 1) % NCOLS == 5:
+                return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 + 2)
             if (self.square.number - 1) % NCOLS == 3 or (self.square.number - 1) % NCOLS == 4:
                 return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 + 20)
 
@@ -82,34 +81,12 @@ class Piece:
             return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 + 3)
 
         if self.type == KING:
-            return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 - 500)
+            return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 - 200)
 
         if self.type == ROOK:
             return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 - 10)
 
-        '''
-        if self.type == PAWN:
-            if (self.square.number-1) % NCOLS == 0 or (self.square.number-1) % NCOLS == 7:
-                return -1 * ( (dist1 + dist2 + dist3 + dist4) / 4 ) * (12 - 14)
-            if (self.square.number-1) % NCOLS == 1 or (self.square.number-1) % NCOLS == 6:
-                return -1 * ( (dist1 + dist2 + dist3 + dist4) / 4 ) * (12 - 10)
-            if (self.square.number-1) % NCOLS == 2 or (self.square.number-1) % NCOLS == 5:
-                return -1 * ( (dist1 + dist2 + dist3 + dist4) / 4 ) * (12 - 2)
-            if (self.square.number-1) % NCOLS == 3 or (self.square.number-1) % NCOLS == 4:
-                return -1 * ( (dist1 + dist2 + dist3 + dist4) / 4 ) * (12 - 1)
-
-        if self.type == BISHOP:
-            return -1 * ( (dist1 + dist2 + dist3 + dist4) / 4 ) * (12 - 4)
-
-        if self.type == ROOK:
-            return -1 * ( (dist1 + dist2 + dist3 + dist4) / 4 ) * (12 - 11)
-
-        if self.type == KNIGHT:
-            return -1 * ( (dist1 + dist2 + dist3 + dist4) / 4 ) * (12 - 3)
-
-        '''
-
-        return -1 * ( (dist1 + dist2 + dist3 + dist4) / 4 ) * (12 - self.points)
+        return -1 * ((dist1 + dist2 + dist3 + dist4) / 4) * (12 - self.points)
 
     def simulateMove(self, square):
         if square != None:
@@ -154,7 +131,7 @@ class Piece:
             self.type = PAWN
 
         # if self.chessGame.gameOver == True:
-           #  self.chessGame.gameOver = False
+        #  self.chessGame.gameOver = False
 
     # Returns a list of the squares that a piece can move to ( Pseudo legal moves )
     def actualLegalMovesSquares(self):

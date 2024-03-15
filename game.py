@@ -9,7 +9,7 @@ from AI import AI
 class GameController:
     def __init__(self):
         pygame.init()
-        pygame.display.set_caption("Chess")
+        pygame.display.set_caption("Pixel Chess")
         self.display = pygame.display.set_mode(SCREENSIZE)
         self.chessScreen = pygame.Surface(SCREENSIZE)
         self.botChessGame = None

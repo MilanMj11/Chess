@@ -20,7 +20,7 @@ class Square:
         self.rectangle = pygame.Rect(col * TILEWIDTH, line * TILEHEIGHT, (col+1) * TILEWIDTH, (line+1) * TILEHEIGHT)
 
     def changeRedColor(self):
-        if self.color == CREAM:
+        if self.color == GREY:
             self.color = HARD_RED
         else:
             self.color = LIGHT_RED
@@ -28,9 +28,9 @@ class Square:
         self.color = color
     def setCorrectColor(self):
         if ( self.number + (self.number - 1) // NCOLS ) % 2 == 0:
-            self.color = BROWN
+            self.color = BLUE
         else:
-            self.color = CREAM
+            self.color = GREY
 
     def render(self, surf):
         pygame.draw.rect(surf,self.color,self.rectangle)

@@ -23,7 +23,7 @@ class Chess:
             if self.turn == BLACK_TURN:
                 return [(10000, 0)]
             else:
-                return [(0,10000)]
+                return [(0, 10000)]
 
         # Material evaluation
         whiteValue = 0
@@ -52,7 +52,7 @@ class Chess:
         pieceDevelopment = (whiteDevelopment, blackDevelopment)
         pieceCentralization = (whiteCentralization, blackCentralization)
 
-        #pieceDevelopment
+        # pieceDevelopment
         return [materialEvaluation, pieceCentralization, pieceDevelopment]
 
     def interpretEvaluation(self, list):
@@ -64,6 +64,16 @@ class Chess:
         return score
 
     def checkIfGameOver(self):
+
+        # check if draw by repetition:
+
+        if len(self.movesHistory) >= 8:
+            if self.movesHistory[-1] == self.movesHistory[-5] and self.movesHistory[-3] == self.movesHistory[-7]:
+                if self.movesHistory[-2] == self.movesHistory[-6] and self.movesHistory[-4] == self.movesHistory[-8]:
+                    self.gameOver = DRAW
+                    return
+
+
         available_moves = 0
         if self.turn == WHITE_TURN:
             for piece in self.pieces:
@@ -98,18 +108,18 @@ class Chess:
 
     def initChessPieces(self):
 
-        self.pieces.append(Piece(self, ROOK, BLACK, self.squares.squareList[0]))
         self.pieces.append(Piece(self, ROOK, BLACK, self.squares.squareList[7]))
+        self.pieces.append(Piece(self, ROOK, BLACK, self.squares.squareList[0]))
         self.pieces.append(Piece(self, ROOK, WHITE, self.squares.squareList[56]))
         self.pieces.append(Piece(self, ROOK, WHITE, self.squares.squareList[63]))
 
-        self.pieces.append(Piece(self, KNIGHT, BLACK, self.squares.squareList[1]))
         self.pieces.append(Piece(self, KNIGHT, BLACK, self.squares.squareList[6]))
+        self.pieces.append(Piece(self, KNIGHT, BLACK, self.squares.squareList[1]))
         self.pieces.append(Piece(self, KNIGHT, WHITE, self.squares.squareList[57]))
         self.pieces.append(Piece(self, KNIGHT, WHITE, self.squares.squareList[62]))
 
-        self.pieces.append(Piece(self, BISHOP, BLACK, self.squares.squareList[2]))
         self.pieces.append(Piece(self, BISHOP, BLACK, self.squares.squareList[5]))
+        self.pieces.append(Piece(self, BISHOP, BLACK, self.squares.squareList[2]))
         self.pieces.append(Piece(self, BISHOP, WHITE, self.squares.squareList[58]))
         self.pieces.append(Piece(self, BISHOP, WHITE, self.squares.squareList[61]))
 

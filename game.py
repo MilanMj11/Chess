@@ -28,8 +28,13 @@ class GameController:
     def update(self):
 
         if self.gameState == PLAYING_BOT and self.botChessGame != None:
-            if self.botChessGame.turn == BLACK_TURN:
-                self.AI.makeMove(self.AI.findBestMove(2))
+            gameWinner = self.botChessGame.gameOver
+            if gameWinner != None:
+                self.gameState = FINAL_STATEMENT
+                self.finalScreen.setWinner(gameWinner)
+            else:
+                if self.botChessGame.turn == BLACK_TURN:
+                    self.AI.makeMove(self.AI.findBestMove(2))
 
         self.clock.tick(90)  # 60 FPS , doesn't really matter right now
         self.checkGameEvents()
@@ -113,10 +118,6 @@ class GameController:
         if self.gameState == PLAYING_BOT:
             self.botChessGame.render(self.chessScreen)
             self.display.blit(self.chessScreen, (0, 0))
-            gameWinner = self.botChessGame.gameOver
-            if gameWinner != None:
-                self.gameState = FINAL_STATEMENT
-                self.finalScreen.setWinner(gameWinner)
 
         if self.gameState == MENU:
             self.menuScreen.render()

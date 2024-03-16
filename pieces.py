@@ -59,9 +59,13 @@ class Piece:
         if self.type == PAWN:
             if self.color == WHITE:
                 if self.square.number <= 32:
+                    dist1 = self.distanceFromSquare(1 + (self.square.number-1) % NCOLS )
+                    dist2 = 0
                     return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 + 5)
             if self.color == BLACK:
                 if self.square.number >= 33:
+                    dist3 = self.distanceFromSquare(57 + (self.square.number-1) % NCOLS )
+                    dist4 = 0
                     return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 + 5)
 
         if self.type == PAWN:
@@ -85,6 +89,14 @@ class Piece:
 
         if self.type == ROOK:
             return -1 * ((dist1 + dist2 + dist3 + dist4) // 3) * (12 - 10)
+
+        if self.type == BISHOP:
+            if self.color == WHITE:
+                dist1 = self.distanceFromSquare(50)
+                dist2 = self.distanceFromSquare(55)
+            else:
+                dist3 = self.distanceFromSquare(10)
+                dist4 = self.distanceFromSquare(15)
 
         return -1 * ((dist1 + dist2 + dist3 + dist4) / 4) * (12 - self.points)
 
